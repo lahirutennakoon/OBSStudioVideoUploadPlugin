@@ -11,117 +11,131 @@
     <script src="bootstrap-4.1.1-dist/js/bootstrap.js"></script>
 
 </head>
-<body>
-    <form enctype="multipart/form-data" method="post" id="imageUploadForm">
-        <div class="form-group">
-            <label for="subject">Subject:</label>
-            <input type="text" class="form-control" id="subject">
-        </div>
-
-        <div class="form-group formElementSize">
-            <label for="lectureVideo">Video:</label>
-            <input type="file" class="form-control" id="lectureVideo" name="lectureVideo" accept="video/*" required>
-        </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
-
-    <!-- Success Modal -->
-    <div class="modal fade" id="successModal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-
-                <!-- Modal Header -->
-                <div class="modal-header">
-                    <h4 class="modal-title"></h4>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>
-
-                <!-- Modal body -->
-                <div class="modal-body">
-                    Video uploaded successfully!
-                </div>
-
-                <!-- Modal footer -->
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-success" data-dismiss="modal">Ok</button>
-                </div>
-
+<body style="background-color: burlywood">
+<div class="row">
+    <div class="col-3"></div>
+    <div class="col-6">
+        <form enctype="multipart/form-data" method="post" id="imageUploadForm">
+            <div class="form-group">
+                <label for="subject">Subject:</label>
+                <input type="text" class="form-control" id="subject" name="subject" required>
             </div>
+
+            <div class="form-group formElementSize">
+                <label for="lectureVideo">Video:</label>
+                <input type="file" class="form-control" id="lectureVideo" name="lectureVideo" accept="video/*" required>
+            </div>
+            <button type="submit" class="btn btn-primary" id="submitButton">Submit</button>
+        </form>
+    </div>
+    <div class="col-3"></div>
+
+
+</div>
+
+
+<!-- Success Modal -->
+<div class="modal fade" id="successModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title"></h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body" style="color: green;">
+                Video uploaded successfully!
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" onclick="reloadPage()">Ok</button>
+            </div>
+
         </div>
     </div>
+</div>
 
-    <!-- Failed Modal -->
-    <div class="modal fade" id="failedModal">
-        <div class="modal-dialog">
-            <div class="modal-content">
+<!-- Failed Modal -->
+<div class="modal fade" id="failedModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
 
-                <!-- Modal Header -->
-                <div class="modal-header">
-                    <h4 class="modal-title"></h4>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>
-
-                <!-- Modal body -->
-                <div class="modal-body">
-                    Video upload failed!
-                </div>
-
-                <!-- Modal footer -->
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-success" data-dismiss="modal">Ok</button>
-                </div>
-
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title"></h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
+
+            <!-- Modal body -->
+            <div class="modal-body" style="color: red;">
+                Video upload failed!
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Ok</button>
+            </div>
+
         </div>
     </div>
+</div>
 
-    <!--Upload image using AJAX-->
-    <script>
-        $('form#imageUploadForm').submit(function (event) {
-            //stop the form submitting automatically
-            event.preventDefault();
+<!--Upload image using AJAX-->
+<script>
+    $('form#imageUploadForm').submit(function (event) {
+        //stop the form submitting automatically
+        event.preventDefault();
 
-            // Create a FormData object
-            const formData = new FormData($(this)[0]);
+        // disable the submit button
+        $("#submitButton").prop("disabled", true);
 
-            // Submit form
-            $.ajax({
-                type: "POST",
-                enctype: 'multipart/form-data',
-                url: "http://localhost:5000/api/video",
-                data: formData,
-                processData: false,
-                contentType: false,
-                cache: false,
-                success: function(response) {
-                    console.log("response");
-                    console.log(response);
-                    if(response.success===true)
-                    {
-                        $('#successModal').modal('show');
-                    }
-                    else
-                    {
-                        $('#failedModal').modal('show');
-                    }
-                },
-                error: function (err) {
-                    console.log(err);
+        // Create a FormData object
+        const formData = new FormData($(this)[0]);
+
+        // Submit form
+        $.ajax({
+            type: "POST",
+            enctype: 'multipart/form-data',
+            url: "http://localhost:5000/api/video",
+            data: formData,
+            processData: false,
+            contentType: false,
+            cache: false,
+            success: function(response) {
+                console.log("response");
+                console.log(response);
+                if(response.success===true)
+                {
+                    $('#successModal').modal('show');
+                }
+                else
+                {
                     $('#failedModal').modal('show');
                 }
-            });
 
+                // Enable submit button
+                $("#submitButton").prop("disabled", false);
+            },
+            error: function (err) {
+                console.log(err);
+                $('#failedModal').modal('show');
+
+                // Enable submit button
+                $("#submitButton").prop("disabled", false);
+            }
         });
 
-        function reloadPage()
-        {
-            window.location.reload();
-        }
+    });
 
-        function closeModal()
-        {
-            $('#failedModal').modal('hide');
-        }
-        </script>
+    function reloadPage()
+    {
+        window.location.reload();
+    }
+
+</script>
 </body>
 </html>

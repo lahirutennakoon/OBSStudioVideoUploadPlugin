@@ -17,14 +17,22 @@
     <div class="col-6">
         <form enctype="multipart/form-data" method="post" id="imageUploadForm">
             <div class="form-group">
-                <label for="subject">Subject:</label>
+                <label for="subject"><b>Subject:</b></label>
                 <input type="text" class="form-control" id="subject" name="subject" required>
             </div>
 
             <div class="form-group formElementSize">
-                <label for="lectureVideo">Video:</label>
+                <label for="lectureVideo"><b>Video:</b></label>
                 <input type="file" class="form-control" id="lectureVideo" name="lectureVideo" accept="video/*" required>
             </div>
+
+            <div class="form-group">
+                <video controls class="form-control" id="lectureVideoPreview" hidden>
+                    <source id="videoPreview">
+                    Your browser does not support HTML5 video.
+                </video>
+            </div>
+
             <button type="submit" class="btn btn-primary" id="submitButton">Submit</button>
         </form>
     </div>
@@ -136,6 +144,13 @@
         window.location.reload();
     }
 
+    $(document).on("change", "#lectureVideo", function(evt) {
+        var $source = $('#videoPreview');
+        $source[0].src = URL.createObjectURL(this.files[0]);
+        $source.parent()[0].load();
+
+        $('#lectureVideoPreview').removeAttr('hidden');
+    });
 </script>
 </body>
 </html>

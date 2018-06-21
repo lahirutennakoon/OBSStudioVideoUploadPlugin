@@ -26,6 +26,10 @@
                 <input type="file" class="form-control" id="lectureVideo" name="lectureVideo" accept="video/*" required>
             </div>
 
+            <div class="alert alert-danger" id="fileTypeErrorAlert" hidden>
+                <strong>Invalid file type!</strong> Please select a video file.
+            </div>
+
             <div class="form-group">
                 <video controls class="form-control" id="lectureVideoPreview" hidden>
                     <source id="videoPreview">
@@ -41,16 +45,39 @@
 
 </div>
 
+<!-- Progress bar modal -->
+<div class="modal fade" id="progressBarModal" data-backdrop="static" data-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h4 class="modal-title">Uploading...</h4>
+            </div>
+
+            <!-- Modal body -->
+            <div class="modal-body">
+                <div class="progress">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- Modal footer -->
+            <div class="modal-footer">
+            </div>
+
+        </div>
+    </div>
+</div>
 
 <!-- Success Modal -->
-<div class="modal fade" id="successModal">
+<div class="modal fade" id="successModal" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog">
         <div class="modal-content">
 
             <!-- Modal Header -->
             <div class="modal-header">
                 <h4 class="modal-title"></h4>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
 
             <!-- Modal body -->
@@ -68,7 +95,7 @@
 </div>
 
 <!-- Failed Modal -->
-<div class="modal fade" id="failedModal">
+<div class="modal fade" id="failedModal" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog">
         <div class="modal-content">
 
@@ -93,64 +120,6 @@
 </div>
 
 <!--Upload image using AJAX-->
-<script>
-    $('form#imageUploadForm').submit(function (event) {
-        //stop the form submitting automatically
-        event.preventDefault();
-
-        // disable the submit button
-        $("#submitButton").prop("disabled", true);
-
-        // Create a FormData object
-        const formData = new FormData($(this)[0]);
-
-        // Submit form
-        $.ajax({
-            type: "POST",
-            enctype: 'multipart/form-data',
-            url: "http://localhost:5000/api/video",
-            data: formData,
-            processData: false,
-            contentType: false,
-            cache: false,
-            success: function(response) {
-                console.log("response");
-                console.log(response);
-                if(response.success===true)
-                {
-                    $('#successModal').modal('show');
-                }
-                else
-                {
-                    $('#failedModal').modal('show');
-                }
-
-                // Enable submit button
-                $("#submitButton").prop("disabled", false);
-            },
-            error: function (err) {
-                console.log(err);
-                $('#failedModal').modal('show');
-
-                // Enable submit button
-                $("#submitButton").prop("disabled", false);
-            }
-        });
-
-    });
-
-    function reloadPage()
-    {
-        window.location.reload();
-    }
-
-    $(document).on("change", "#lectureVideo", function(evt) {
-        var $source = $('#videoPreview');
-        $source[0].src = URL.createObjectURL(this.files[0]);
-        $source.parent()[0].load();
-
-        $('#lectureVideoPreview').removeAttr('hidden');
-    });
-</script>
+<script src="app.js"></script>
 </body>
 </html>

@@ -18,10 +18,16 @@ control.addEventListener("change", function(event) {
     {
         $('#fileTypeErrorAlert').show();
         $('#fileTypeErrorAlert').removeAttr('hidden');
+
+        // disable the submit button
+        $("#submitButton").prop("disabled", true);
     }
     else
     {
         $('#fileTypeErrorAlert').hide();
+
+        // Enable submit button
+        $("#submitButton").prop("disabled", false);
     }
 
 }, false);

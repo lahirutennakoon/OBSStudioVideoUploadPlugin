@@ -51,7 +51,7 @@ $('form#imageUploadForm').submit(function (event) {
     $.ajax({
         type: "POST",
         enctype: 'multipart/form-data',
-        url: "http://localhost:5000/api/video",
+        url: configurations.apiUrl + "/api/video",
         data: formData,
         processData: false,
         contentType: false,
